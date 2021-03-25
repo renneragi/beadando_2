@@ -11,7 +11,6 @@ public class Server {
 		while (true) {
 			Socket s = ss.accept();
 			new Thread(new Service(s)).start();
-
 		}
 	}
 

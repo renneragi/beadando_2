@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 public class Client {
 
 	public static void main(String[] args) throws IOException, UnknownHostException {
-		Socket s = new Socket("172.22.16.1", 1234);
+		Socket s = new Socket("127.0.0.1", 1234);
 
 		// ide jön, az amit a kliens csinál
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -18,10 +18,8 @@ public class Client {
 		PrintWriter pw = new PrintWriter(s.getOutputStream());
 		pw.print(dataToSave);
 		pw.flush();
-
-		
+	
 		pw.close();
 		s.close();
 	}
-
 }

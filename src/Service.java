@@ -15,39 +15,48 @@ public class Service implements Runnable {
 		this.s = s;
 	}
 
+	private void saveDataToFile(String dataToSave, Timestamp timestamp) throws IOException {
+		int hash = dataToSave.hashCode();
+		File newFile = new File("./target/" + hash + ".txt");
+
+		if (newFile.createNewFile()) {
+
+			PrintWriter outFile = new PrintWriter(new FileWriter(newFile));
+			outFile.write(timestamp.toString());
+			outFile.write(" " + dataToSave);
+			outFile.flush();
+			outFile.close();
+
+		} else {
+			System.out.println("File already exists.");
+		}
+
+	}
+
+	private void saveDataToLog(String dataToSave, Timestamp timestamp) throws IOException {
+		PrintWriter outFile = new PrintWriter(new FileWriter("./target/log.txt", true));
+		outFile.write(timestamp.toString() + " " + dataToSave + '\n');
+		outFile.close();
+		System.out.println(dataToSave);
+	}
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		// Ide jön, az amit a szerver csinál
-
+		BufferedReader bf;
 		try {
-			BufferedReader bf = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
-			String dataToSave = bf.readLine();
-			int hash = dataToSave.hashCode();
+			bf = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			String datatToSave = bf.readLine();
 
-			File newFile = new File("./target/" + hash+".txt");
-			if (newFile.createNewFile()) {
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-				PrintWriter outFile;
-				outFile = new PrintWriter(new FileWriter(newFile));
-				outFile.write(timestamp.toString());
-				outFile.write(" " + dataToSave);
-				outFile.close();
-
-			} else {
-				System.out.println("File already exists.");
-			}
-
-			PrintWriter pw = new PrintWriter(s.getOutputStream());
-			pw.print("Sikeres mentés");
-			pw.flush();
-
-			pw.close();
+			this.saveDataToFile(datatToSave, timestamp);
+			this.saveDataToLog(datatToSave, timestamp);
+			
 			bf.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 }
